@@ -3,7 +3,6 @@ from selenium.webdriver.support.ui import Select
 from faker import Faker
 from . import BasePage
 
-
 class CheckoutPage(BasePage.BasePage):
   def __init__(self, driver):
     super().__init__(driver)

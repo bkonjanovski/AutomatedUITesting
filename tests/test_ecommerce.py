@@ -126,9 +126,7 @@ class EcommerceTests(unittest.TestCase):
     checkoutPage = CheckoutPage(self.driver)
     checkoutPage.EnterRandomCustomerInformation()
     checkoutPage.EnterCCaymentInformation("0000 0000 0000 0000", "0223", "0000")
-    checkoutPage.ConfirmOrder()
     checkoutPage.VerifyPaymentError()
-
 
   def tearDown(self):
     self.driver.quit()
