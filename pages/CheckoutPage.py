@@ -50,13 +50,15 @@ class CheckoutPage(BasePage.BasePage):
     self.driver.find_element(By.CSS_SELECTOR, self.btn_done_customer_information_selector).click()
     self.wait.until_not(self.EC.text_to_be_present_in_element_attribute((By.CSS_SELECTOR, self.section_payment_methods_selector), "class", "disabled"))
 
-  def EnterCCaymentInformation(self):
+  def EnterCCaymentInformation(self, cc_number = Faker().credit_card_number(card_type='visa16'), cc_expire = Faker().credit_card_expire(), cc_cvv = Faker().credit_card_security_code()):
     self.driver.find_element(By.CSS_SELECTOR, self.radio_payment_method_CC_selector).click()
-    self.driver.find_element(By.CSS_SELECTOR, self.input_card_number_selector).send_keys(Faker().credit_card_number(card_type='visa16'))
-    self.driver.find_element(By.CSS_SELECTOR, self.input_expiry_date_selector).send_keys(Faker().credit_card_expire())
-    self.driver.find_element(By.CSS_SELECTOR, self.input_security_code_selector).send_keys(Faker().credit_card_security_code())
+    self.driver.find_element(By.CSS_SELECTOR, self.input_card_number_selector).send_keys(cc_number)
+    self.driver.find_element(By.CSS_SELECTOR, self.input_expiry_date_selector).send_keys(cc_expire)
+    self.driver.find_element(By.CSS_SELECTOR, self.input_security_code_selector).send_keys(cc_cvv)
     self.driver.find_element(By.CSS_SELECTOR, self.btn_add_card_selector).click()
-    self.wait.until_not(self.EC.element_attribute_to_include((By.CSS_SELECTOR, self.btn_confirm_and_pay_selector), "aria-disabled"))
+
+  def VerifyPaymentError(self):
+    self.wait.until(self.EC.presence_of_element_located((By.CSS_SELECTOR, self.section_notificiations_selector)))
 
   def EnterPayPalPaymentInformation(self):
     self.driver.find_element(By.CSS_SELECTOR, self.radio_payment_method_paypal_selector).click()
@@ -65,5 +67,6 @@ class CheckoutPage(BasePage.BasePage):
     self.wait.until(self.EC.presence_of_element_located((By.CSS_SELECTOR, self.section_paypal_login_selector)))
 
   def ConfirmOrder(self):
+    self.wait.until_not(self.EC.element_attribute_to_include((By.CSS_SELECTOR, self.btn_confirm_and_pay_selector), "aria-disabled"))
     self.driver.find_element(By.CSS_SELECTOR, self.btn_confirm_and_pay_selector).click()
     self.wait.until(self.EC.presence_of_element_located((By.CSS_SELECTOR, self.section_notificiations_selector)))

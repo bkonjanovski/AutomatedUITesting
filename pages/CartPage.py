@@ -11,6 +11,7 @@ class CartPage(BasePage.BasePage):
   btn_remove_from_cart_selector = "button[data-test-id='cart-remove-item']"
   cart_item_selector = "a[data-test-id='cart-item-link']"
   empty_cart_selector = "div[class='empty-cart']"
+  btn_cart_checkout_selector = "button[data-test-id='cta-top']"
 
   def RemoveProductFromCart(self, productName):
     cart = self.driver.find_element(By.CSS_SELECTOR, self.cart_icon_selector)
@@ -27,6 +28,10 @@ class CartPage(BasePage.BasePage):
          return 
     assert False, "product not found in cart"
     #self.wait.until(self.EC.text_to_be_present_in_element((By.CSS_SELECTOR, self.section_cart_selector), productName)) - alternative check
+  
+  def CheckoutCart(self):
+    btn_cart_checkout = self.driver.find_element(By.CSS_SELECTOR, self.btn_cart_checkout_selector)
+    btn_cart_checkout.click()    
 
   def VerifyCartIsEmpty(self):
     self.wait.until(self.EC.text_to_be_present_in_element((By.CSS_SELECTOR, self.empty_cart_selector), "You don't have any items in your cart."))

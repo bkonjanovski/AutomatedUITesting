@@ -12,6 +12,7 @@ class ProductPage(BasePage.BasePage):
   btn_buy_selector = "div[data-testid='x-bin-action']"
   btn_add_to_cart_selector = "div[data-testid='x-atc-action']"
   btn_guest_checkout_selector = "div[class='ux-bin-nudge__guestCheckOut']"
+  error_message_selector = "div[class='x-msku__error has-error']"
 
   def ChooseProductOptionsIfApplicable(self):
     ddl_options = self.driver.find_elements(By.CSS_SELECTOR, self.ddl_options_selector)
@@ -31,4 +32,9 @@ class ProductPage(BasePage.BasePage):
     btn_add_to_cart = self.driver.find_element(By.CSS_SELECTOR, self.btn_add_to_cart_selector)
     btn_add_to_cart.click()
     return productLink
+  
+  def VerifyErrorMessage(self):
+    self.wait.until(self.EC.presence_of_element_located((By.CSS_SELECTOR, self.error_message_selector)))
+
+  
   

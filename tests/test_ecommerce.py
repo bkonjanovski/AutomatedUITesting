@@ -3,6 +3,7 @@ from selenium import webdriver
 from pages.ItemsPage import ItemsPage
 from pages.ProductPage import ProductPage
 from pages.CartPage import CartPage
+from pages.SigninPage import SigninPage
 from pages.CheckoutPage import CheckoutPage
 
 class EcommerceTests(unittest.TestCase):
@@ -80,8 +81,55 @@ class EcommerceTests(unittest.TestCase):
     checkoutPage = CheckoutPage(self.driver)
     checkoutPage.EnterRandomCustomerInformation()
     checkoutPage.EnterPayPalPaymentInformation()
+    
         
-        
+  #NEGATIVE SCENARIOS     
+  def test_invalid_login(self):
+    itemsPage = ItemsPage(self.driver)
+    itemsPage.OpenSignIn()
+    signinPage = SigninPage(self.driver)
+    signinPage.EnterInvalidLogin()
+    signinPage.SubmitLogin() 
+    signinPage.VerifyLoginError()
+
+  def test_facebook_login(self):
+    itemsPage = ItemsPage(self.driver)
+    itemsPage.OpenSignIn()
+    signinPage = SigninPage(self.driver)
+    signinPage.VerifyFacebookLoginRedirection  
+
+  def test_verify_cart_checkout_requires_login(self):
+    itemsPage = ItemsPage(self.driver)
+    itemsPage.SelectRandomItem()
+    productPage = ProductPage(self.driver)
+    productPage.ChooseProductOptionsIfApplicable()
+    productLink = productPage.AddProductToCart()        
+    cartPage = CartPage(self.driver)
+    cartPage.VerifyProductIsPresentInCart(productLink)
+    cartPage.CheckoutCart()
+    SigninPage(self.driver)
+
+  def test_verify_product_options_mandatory(self):
+    self.driver.get("https://www.ebay.com/globaldeals/fashion/mens-shoes-accessories")
+    itemsPage = ItemsPage(self.driver)
+    itemsPage.SelectRandomItem()
+    productPage = ProductPage(self.driver)
+    productPage.AddProductToCart()      
+    productPage.VerifyErrorMessage()  
+
+  def test_invalid_payment_details(self):
+    itemsPage = ItemsPage(self.driver)
+    itemsPage.SelectRandomItem()
+    productPage = ProductPage(self.driver)
+    productPage.ChooseProductOptionsIfApplicable()
+    productPage.BuyProductasGuest()
+    checkoutPage = CheckoutPage(self.driver)
+    checkoutPage.EnterRandomCustomerInformation()
+    checkoutPage.EnterCCaymentInformation("0000 0000 0000 0000", "0223", "0000")
+    checkoutPage.ConfirmOrder()
+    checkoutPage.VerifyPaymentError()
+
+
   def tearDown(self):
     self.driver.quit()
 
